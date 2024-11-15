@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { ReactStrictModeProvider } from './ReactStrictModeProvider'
 import { RouterProvider } from './RouterProvider'
-import { ChakraProvider } from './ChakraProvider'
+import { CustomChakraProvider } from './ChakraProvider'
 
 interface CombinedProvidersProps {
   children: ReactNode
@@ -10,9 +10,9 @@ interface CombinedProvidersProps {
 export const CombinedProviders = ({ children }: CombinedProvidersProps) => {
   return (
     <ReactStrictModeProvider>
-      <RouterProvider>
-        <ChakraProvider>{children}</ChakraProvider>
-      </RouterProvider>
+      <CustomChakraProvider>
+          <RouterProvider>{children}</RouterProvider>
+      </CustomChakraProvider>
     </ReactStrictModeProvider>
   )
 }

@@ -7,11 +7,7 @@ interface RouterProviderProps {
 }
 
 export const RouterProvider = ({ children }: RouterProviderProps) => (
-  <BrowserRouter
-    future={{
-      v7_relativeSplatPath: true,
-    }}
-  >
+  <BrowserRouter>
     <Suspense fallback={<LoadingPage />}>{children}</Suspense>
   </BrowserRouter>
 )
