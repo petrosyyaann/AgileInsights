@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ContainerApp } from 'shared/ui'
 import Loading from 'pages/loading'
 import { refreshWithoutRepeats } from 'shared/api/axios'
 
@@ -36,5 +35,5 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   if (!isLoaded) return <Loading />
 
-  return <ContainerApp>{children}</ContainerApp>
+  return children
 }
