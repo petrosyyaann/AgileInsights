@@ -1,15 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Box,
-  Checkbox,
-  Input,
   Menu,
   MenuButton,
   MenuList,
-  MenuItem,
   Button,
-  Stack,
-  Text,
   Flex,
   NumberInput,
   NumberInputField,
@@ -20,8 +15,14 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  Checkbox,
+  Input,
+  Stack,
+  MenuItem,
+  Text,
 } from '@chakra-ui/react'
 import { Chevron } from 'shared/iconpack'
+import { useFiltresStore } from 'entities/filters/modal'
 
 type Option = {
   label: string
@@ -33,8 +34,6 @@ type MultiSelectProps = {
   onChange?: (selected: string[] | [number, number]) => void
   placeholder: string
   type: 'multi' | 'range'
-  minRange?: number
-  maxRange?: number
 }
 
 export const MultiSelect = ({
@@ -42,35 +41,39 @@ export const MultiSelect = ({
   onChange,
   placeholder,
   type,
-  minRange = 0,
-  maxRange = 100,
 }: MultiSelectProps) => {
-  const [selectedValues, setSelectedValues] = useState<string[]>([])
-  const [rangeValues, setRangeValues] = useState<[number, number]>([
+  const {
     minRange,
     maxRange,
-  ])
+    setMinRange,
+    setMaxRange,
+    selectedSprints,
+    toggleSprintSelection,
+  } = useFiltresStore()
   const [search, setSearch] = useState('')
 
-  const toggleSelection = (value: string) => {
-    const updatedValues = selectedValues.includes(value)
-      ? selectedValues.filter((item) => item !== value)
-      : [...selectedValues, value]
-
-    setSelectedValues(updatedValues)
-    onChange?.(updatedValues)
-  }
-
-  const handleRangeChange = (index: number, value: number) => {
-    const newRange = [...rangeValues] as [number, number]
-    newRange[index] = value
-    setRangeValues(newRange)
-    onChange?.(newRange)
+  const handleRangeChange = (type: 'min' | 'max', value: number) => {
+    if (type === 'min') {
+      const newMin = Math.min(value, maxRange)
+      setMinRange(newMin)
+    } else {
+      const newMax = Math.max(value, minRange)
+      setMaxRange(newMax)
+    }
+    onChange?.([minRange, maxRange])
   }
 
   const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().includes(search.toLowerCase())
   )
+
+  const isRangeInvalid = minRange > maxRange
+
+  useEffect(() => {
+    if (type === 'range') {
+      onChange?.([minRange, maxRange])
+    }
+  }, [minRange, maxRange, onChange])
 
   return (
     <Box>
@@ -88,10 +91,10 @@ export const MultiSelect = ({
         >
           <Flex w="100%">
             {type === 'multi'
-              ? selectedValues.length > 0
-                ? `Выбрано: ${selectedValues.length}`
+              ? selectedSprints.length > 0
+                ? `Выбрано: ${selectedSprints.length}`
                 : placeholder
-              : `с ${rangeValues[0]} по ${rangeValues[1]}`}
+              : `с ${minRange} по ${maxRange}`}
           </Flex>
         </MenuButton>
         <MenuList minWidth="240px">
@@ -109,11 +112,11 @@ export const MultiSelect = ({
                 {filteredOptions.map((option) => (
                   <MenuItem
                     key={option.value}
-                    onClick={() => toggleSelection(option.value)}
+                    onClick={() => toggleSprintSelection(option.value)}
                   >
                     <Checkbox
-                      isChecked={selectedValues.includes(option.value)}
-                      onChange={() => toggleSelection(option.value)}
+                      isChecked={selectedSprints.includes(Number(option.value))}
+                      onChange={() => toggleSprintSelection(option.value)}
                     >
                       {option.label}
                     </Checkbox>
@@ -131,14 +134,17 @@ export const MultiSelect = ({
               <Flex gap={3} align="center">
                 <NumberInput
                   size="sm"
-                  value={rangeValues[0]}
-                  onChange={(value) =>
-                    handleRangeChange(0, parseInt(value) || minRange)
+                  value={minRange}
+                  onChange={(valueString) =>
+                    handleRangeChange('min', parseInt(valueString) || 0)
                   }
-                  min={minRange}
-                  max={rangeValues[1]}
+                  min={0}
+                  max={maxRange}
+                  isInvalid={isRangeInvalid}
                 >
-                  <NumberInputField />
+                  <NumberInputField
+                    borderColor={isRangeInvalid ? 'red.500' : 'gray.200'}
+                  />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
                     <NumberDecrementStepper />
@@ -147,14 +153,17 @@ export const MultiSelect = ({
                 <Text color="#9896A9">по</Text>
                 <NumberInput
                   size="sm"
-                  value={rangeValues[1]}
-                  onChange={(value) =>
-                    handleRangeChange(1, parseInt(value) || maxRange)
+                  value={maxRange}
+                  onChange={(valueString) =>
+                    handleRangeChange('max', parseInt(valueString) || 0)
                   }
-                  min={rangeValues[0]}
-                  max={maxRange}
+                  min={minRange}
+                  max={14}
+                  isInvalid={isRangeInvalid}
                 >
-                  <NumberInputField />
+                  <NumberInputField
+                    borderColor={isRangeInvalid ? 'red.500' : 'gray.200'}
+                  />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
                     <NumberDecrementStepper />
@@ -162,10 +171,10 @@ export const MultiSelect = ({
                 </NumberInput>
               </Flex>
               <Slider
-                value={rangeValues[0]}
-                min={minRange}
-                max={maxRange}
-                onChange={(value) => handleRangeChange(0, value)}
+                value={minRange}
+                min={1}
+                max={14}
+                onChange={(value) => handleRangeChange('min', value)}
               >
                 <SliderTrack>
                   <SliderFilledTrack />
@@ -173,10 +182,10 @@ export const MultiSelect = ({
                 <SliderThumb />
               </Slider>
               <Slider
-                value={rangeValues[1]}
-                min={minRange}
-                max={maxRange}
-                onChange={(value) => handleRangeChange(1, value)}
+                value={maxRange}
+                min={1}
+                max={14}
+                onChange={(value) => handleRangeChange('max', value)}
               >
                 <SliderTrack>
                   <SliderFilledTrack />

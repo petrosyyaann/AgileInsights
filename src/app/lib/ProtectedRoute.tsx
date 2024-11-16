@@ -31,7 +31,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     }
 
     checkAuth()
-  }, [navigate])
+  }, [])
 
   if (!isLoaded) return <Loading />
 

@@ -56,12 +56,13 @@ interface ChartProps {
   // >
 }
 
-type MockDataType = {
+export type MockDataType = {
   labels: string[]
   datasets: {
     label: string
     data: number[]
     backgroundColor: string
+    borderRadius: number
   }[]
 }
 

@@ -23,12 +23,13 @@ export const Card = ({
   const status = getStatus(percent)
   return (
     <Flex
-      w="100%"
+      w={'100%'}
+      maxW="500px"
       bg="white"
       direction="column"
       borderRadius="20px"
       padding="10px 40px 10px 40px"
-      h="40vh"
+      h="45vh"
       gap="15px"
       alignItems="flex-start"
     >
@@ -39,25 +40,25 @@ export const Card = ({
         <Flex
           h="100%"
           alignItems="center"
-          w="100%"
           justifyContent="space-around"
+          w="100%"
         >
           <Flex direction="column" w="100%">
             <Text fontSize="56px" color="#373645" fontWeight={700}>
-              {percent}%
+              {percent.toFixed(2)}%
             </Text>
             <Text fontSize="18px" color={status.color} fontWeight={700}>
               {status.status}
             </Text>
           </Flex>
-          <Flex h="30vh" w="30vw">
+          <Flex h="23vh">
             <PieChart percent={percent} color={status.color} />
           </Flex>
         </Flex>
       ) : (
-        <Flex direction="column">
+        <Flex direction="column" w="100%">
           <Text fontSize="56px" color="#373645" fontWeight={700}>
-            {percent}
+            {percent.toFixed(0)}
           </Text>
           <Text fontSize="18px" color="#61C6FF" fontWeight={700}>
             {description}

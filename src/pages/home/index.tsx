@@ -2,44 +2,26 @@ import { Box, ColorDotListItem, Flex, MultiSelect, Text } from 'shared/ui'
 import { Card } from 'shared/ui/card'
 import StackedBarChart from 'shared/ui/histogram'
 import { SprintTableCard } from 'widgets/SprintTableCard'
+import { useGetSprints } from './lib/useGetSprints'
+import { useFiltresStore } from 'entities/filters/modal'
 
 const HomePage = () => {
-  const mockData = {
-    labels: ['Спринт 1', 'Спринт 2', 'Спринт 3', 'Спринт 4'],
-    datasets: [
-      {
-        label: 'К выполнению',
-        data: [0, 4, 0, 3],
-        backgroundColor: '#8AF179',
-        borderRadius: 100,
-      },
-      {
-        label: 'В работе',
-        data: [6, 4, 5, 3],
-        backgroundColor: '#7984F1',
-        borderRadius: 100,
-      },
-      {
-        label: 'Сделано',
-        data: [6, 4, 5, 3],
-        backgroundColor: '#F179C1',
-        borderRadius: 100,
-      },
-      {
-        label: 'Снято',
-        data: [0, 4, 5, 3],
-        backgroundColor: '#61C6FF',
-        borderRadius: 100,
-      },
-    ],
-  }
-
   const items = [
     { label: 'К выполнению', color: '#8AF179' },
     { label: 'В работе', color: '#7984F1' },
     { label: 'Сделано', color: '#F179C1' },
     { label: 'Снято', color: '#61C6FF' },
   ]
+
+  const {
+    data,
+    dataHistogarm,
+    dataBacklog,
+    dataBlockedSum,
+    dataBlockedPersent,
+    dataTable
+  } = useGetSprints()
+  const { selectedSprints } = useFiltresStore()
 
   return (
     <Flex
@@ -74,35 +56,21 @@ const HomePage = () => {
           alignItems="center"
           gap="20px"
         >
-          <MultiSelect
-            options={[
-              { label: 'Спринт 1', value: 'Sprint 1' },
-              { label: 'Спринт 2', value: 'Sprint 2' },
-              { label: 'Спринт 3', value: 'Sprint 3' },
-              { label: 'Спринт 4', value: 'Sprint 4' },
-            ]}
-            placeholder="Спринты"
-            type={'multi'}
-          />
-          <MultiSelect
+          <MultiSelect options={data} placeholder="Спринты" type={'multi'} />
+          {/* <MultiSelect
             options={[
               { label: 'Asisiti', value: 'Asisiti' },
               { label: 'SpchX', value: 'SpchX' },
             ]}
             placeholder="Команда спринта"
             type={'multi'}
-          />
-          <MultiSelect
-            minRange={1}
-            maxRange={14}
-            placeholder="Дни спринта для анализа"
-            type={'range'}
-          />
+          /> */}
+          <MultiSelect placeholder="Дни спринта для анализа" type={'range'} />
         </Flex>
       </Flex>
-      <Flex h="40vh" gap="20px">
+      <Flex h="45vh" gap="20px">
         <Flex
-          w="45vw"
+          w={'100%'}
           bg="white"
           direction="column"
           justify="center"
@@ -112,16 +80,16 @@ const HomePage = () => {
           <Text fontSize="18px" color="#373645" fontWeight={700}>
             Здоровье
           </Text>
-          <Flex h="30vh" gap="10px">
-            <Flex w="35vw">
-              <StackedBarChart mockData={mockData} />
+          <Flex h={selectedSprints.length === 1 ? '30vh' : '35vh'} gap="10px">
+            <Flex w="100%">
+              {dataHistogarm && <StackedBarChart mockData={dataHistogarm} />}
             </Flex>
             <Flex
               as="ul"
               listStyleType="none"
               margin={0}
               padding={0}
-              w="130px"
+              w="140px"
               direction="column"
             >
               {items.map((item, index) => (
@@ -140,18 +108,45 @@ const HomePage = () => {
           >
             Оценка Ч/Д
           </Text>
+          {selectedSprints.length === 1 && (
+            <Flex direction="column" mt="10px">
+              <ColorDotListItem
+                label={
+                  'Снято - не должно составлять более 10% от общего объема'
+                }
+                color={'#61C6FF'}
+              />
+              <ColorDotListItem
+                label={
+                  'К выполнению - не должно составлять более 20% от общего объема'
+                }
+                color={'#8AF179'}
+              />
+            </Flex>
+          )}
         </Flex>
-        <Card percent={5.3} title={'Средний процент измнения беклога:'} />
+        <Card
+          percent={dataBacklog || 0}
+          title={
+            selectedSprints.length === 1
+              ? 'Средний процент измнения беклога:'
+              : 'Процент измнения беклога:'
+          }
+        />
       </Flex>
       <Flex direction="row" mt="20px" w="100%" gap="20px">
         <Flex>
-          <SprintTableCard />
+          <SprintTableCard dataTable={dataTable} />
         </Flex>
         <Flex w="100%">
           <Card
-            percent={14.5}
-            title={'Заблокировано задач в Ч/Д:'}
-            description="12% от общего числа в спринте"
+            percent={dataBlockedSum || 0}
+            title={'Общая оценка заблокированных задач в Ч/Д:'}
+            description={
+              dataBlockedPersent !== 0
+                ? `${dataBlockedPersent}% от общего числа в спринте`
+                : ' '
+            }
           />
         </Flex>
       </Flex>
