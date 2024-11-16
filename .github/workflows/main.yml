@@ -11,16 +11,20 @@ jobs:
       - name: 🏗 checkout
         uses: actions/checkout@v4
 
-      - name: 🔧install bun
-        uses: oven-sh/setup-bun@v1
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
         with:
-          bun-version: latest
+          node-version: 20.x
 
-      - name: 📚install dependencies
-        run: bun install
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install # will run `yarn install` command
 
       - name: 🛠build
-        run: bunx --bun vite build
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
 
       - name: 🚀deploy
         uses: burnett01/rsync-deployments@7.0.0
