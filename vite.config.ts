@@ -10,7 +10,6 @@ export default defineConfig({
     open: 'http://localhost:5173/',
     proxy: {
       '/api/v1': {
-        //dev
         target: 'http://spb.pndsdn.tech:8080/api/v1',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/v1/, ''),

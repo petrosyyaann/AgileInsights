@@ -17,17 +17,17 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       const token = localStorage.getItem('refresh')
 
       if (!token) {
-        navigate('/') 
+        navigate('/')
         return setIsLoaded(true)
       }
 
       try {
-        await refreshWithoutRepeats() 
+        await refreshWithoutRepeats()
       } catch {
         localStorage.removeItem('refresh')
-        navigate('/') 
+        navigate('/')
       } finally {
-        setIsLoaded(true) 
+        setIsLoaded(true)
       }
     }
 

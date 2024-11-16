@@ -19,7 +19,7 @@ export const LoginLayout = ({ children }: { children: ReactNode }) => (
         left: '-5%',
         width: '252px',
         height: '252px',
-        background: '#BABFE9',
+        background: '#FFD2ED',
         filter: 'blur(70px)',
         zIndex: 0,
       }}
@@ -31,7 +31,7 @@ export const LoginLayout = ({ children }: { children: ReactNode }) => (
         right: '+15%',
         width: '252px',
         height: '252px',
-        background: '#BABFE9',
+        background: '#FFD2ED',
         filter: 'blur(70px)',
         zIndex: -1,
       }}

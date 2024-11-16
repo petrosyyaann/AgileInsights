@@ -2,6 +2,8 @@ import { defineStyleConfig } from '@chakra-ui/react'
 
 export const ButtonTheme = defineStyleConfig({
   baseStyle: {
+    height: '30px',
+    padding: '5px 15px 5px 15px',
     borderRadius: '7px',
     fontWeight: '400',
     fontSize: '14px',
@@ -12,12 +14,14 @@ export const ButtonTheme = defineStyleConfig({
   },
   variants: {
     baseStyle: {
+      height: '30px',
       background: 'blue.300',
       color: 'white',
       _hover: { background: 'blue.400', color: 'white' },
       _disabled: { background: 'gray.200', opacity: 1 },
     },
     delete: {
+      height: '30px',
       w: '100px',
       background: 'red.400',
       borderRadius: '15px',
@@ -29,6 +33,7 @@ export const ButtonTheme = defineStyleConfig({
       },
     },
     transparent: {
+      height: '30px',
       background: 'transparent',
       textAlign: 'center',
       color: 'gray.500',

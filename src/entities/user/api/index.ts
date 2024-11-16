@@ -26,7 +26,7 @@ export const registerUser = async (userData: {
 }
 
 export function logout() {
-  return axios.post('/api/v1/auth/logout', {
+  return axios.delete('/api/v1/auth/logout', {
     withCredentials: true,
   })
 }

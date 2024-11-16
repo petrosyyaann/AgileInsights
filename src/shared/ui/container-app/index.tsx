@@ -7,9 +7,10 @@ export const ContainerApp = ({ children }: { children: ReactNode }) => (
     bg="white"
     direction="column"
     justify="center"
-    borderRadius="20px 0px 20px 20px"
+    borderRadius="20px"
     mb="30px"
     mr="30px"
+    padding="20px 30px 20px 30px"
   >
     {children}
   </Flex>

@@ -21,3 +21,4 @@ export const Calendar = ({ strokeColor = '#161F29', ...props }: CalendarProps) =
     />
   </svg>
 )
+
