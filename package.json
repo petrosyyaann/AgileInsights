@@ -18,6 +18,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@reduxjs/toolkit": "^2.2.7",
+    "@tanstack/react-table": "^8.20.5",
     "axios": "^1.7.7",
     "chart.js": "^4.4.6",
     "formik": "^2.4.6",

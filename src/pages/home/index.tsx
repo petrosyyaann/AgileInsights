@@ -1,6 +1,7 @@
 import { Box, ColorDotListItem, Flex, MultiSelect, Text } from 'shared/ui'
 import { Card } from 'shared/ui/card'
 import StackedBarChart from 'shared/ui/histogram'
+import { SprintTableCard } from 'widgets/SprintTableCard'
 
 const HomePage = () => {
   const mockData = {
@@ -41,15 +42,21 @@ const HomePage = () => {
   ]
 
   return (
-    <Flex h="90vh" w="100%" direction="column" overflow="scroll">
+    <Flex
+      h="90vh"
+      w="100%"
+      direction="column"
+      overflowY="scroll"
+      overflowX="hidden"
+      mr="30px"
+    >
       <Flex
         w="100%"
         bg="white"
         direction="column"
         justify="center"
         borderRadius="20px"
-        mb="30px"
-        mr="30px"
+        mb="20px"
         padding="10px 20px 10px 20px"
         h="15vh"
         gap="15px"
@@ -93,7 +100,7 @@ const HomePage = () => {
           />
         </Flex>
       </Flex>
-      <Flex h="40vh" gap="30px">
+      <Flex h="40vh" gap="20px">
         <Flex
           w="45vw"
           bg="white"
@@ -136,8 +143,10 @@ const HomePage = () => {
         </Flex>
         <Card percent={5.3} title={'Средний процент измнения беклога:'} />
       </Flex>
-      <Flex direction="row" mt="30px" w="100%" justifyContent="flex-end">
-        <Flex w="90vw">table</Flex>
+      <Flex direction="row" mt="20px" w="100%" gap="20px">
+        <Flex>
+          <SprintTableCard />
+        </Flex>
         <Flex w="100%">
           <Card
             percent={14.5}
