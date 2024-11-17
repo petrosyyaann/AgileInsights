@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Flex, Icon, IconButton, Input, Text, useToast } from '@chakra-ui/react'
 import { Close, Upload } from 'shared/iconpack'
 import { Button, ContainerApp } from 'shared/ui'
+import { postFiles } from 'entities/sprint/api'
 
 const UploadPage = () => {
   const [files, setFiles] = useState<File[]>([])
@@ -22,13 +23,36 @@ const UploadPage = () => {
     }
     setFiles((prev) => [...prev, ...newFiles].slice(0, 3))
   }
+
   const handleUploadClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click()
     }
   }
+
   const handleRemoveFile = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const handleSubmit = async () => {
+    try {
+      await postFiles(files)
+      toast({
+        title: 'Файлы успешно загружены!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+      setFiles([]) 
+    } catch (error) {
+      toast({
+        title: 'Ошибка при загрузке!',
+        description: 'Не удалось загрузить файлы. Попробуйте снова.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
   }
 
   return (
@@ -111,7 +135,7 @@ const UploadPage = () => {
                 ml="auto"
                 background="blue.500"
                 color="white"
-                onClick={() => console.log('отправили')}
+                onClick={handleSubmit}
               >
                 Импортировать
               </Button>

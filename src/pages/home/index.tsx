@@ -22,6 +22,10 @@ const HomePage = () => {
     dataBlockedPersent,
     dataTable,
     dataTooltip,
+    to_do_estimation_points,
+    processed_estimation_points,
+    done_estimation_points,
+    removed_estimation_points,
   } = useGetSprints()
   const { selectedSprints } = useFiltresStore()
 
@@ -41,7 +45,7 @@ const HomePage = () => {
         borderRadius="20px"
         mb="20px"
         padding="10px 20px 10px 20px"
-        h="15vh"
+        h="19vh"
         gap="15px"
         justifyContent="space-between"
       >
@@ -69,7 +73,20 @@ const HomePage = () => {
             <MultiSelect placeholder="Дни спринта для анализа" type={'range'} />
           </Flex>
         </Flex>
-        <SprintHealthWidget />
+        {selectedSprints.length === 1 &&
+          to_do_estimation_points &&
+          processed_estimation_points &&
+          done_estimation_points &&
+          removed_estimation_points && (
+            <SprintHealthWidget
+              to_do_estimation_point={to_do_estimation_points[0]}
+              processed_estimation_point={processed_estimation_points[0]}
+              done_estimation_point={done_estimation_points[0]}
+              removed_estimation_point={removed_estimation_points[0]}
+              dataBlockedPersent={dataBlockedPersent}
+              dataBacklog={dataBacklog}
+            />
+          )}
       </Flex>
       <Flex h="45vh" gap="20px">
         <Flex

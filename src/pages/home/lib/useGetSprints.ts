@@ -33,17 +33,20 @@ function transformDataToTooltip(sprints: SprintData[]): DataRow[] {
 export const useGetSprints = () => {
   const [sprints, setSprints] = useState<Sprint[]>()
   const [result, setResult] = useState<SprintData[]>()
-  const { selectedSprints, maxRange, minRange } = useFiltresStore()
+  const { selectedSprints, maxRange, minRange, toggleSprintSelection } =
+    useFiltresStore()
 
   useEffect(() => {
     getSprint()
       .then(({ data }) => {
         setSprints(data)
+        !(selectedSprints.length > 0) &&
+          toggleSprintSelection(String(data.map((sprint) => sprint.id)[0]))
         data &&
           getResultSprints(
             selectedSprints.length > 0
               ? selectedSprints
-              : data.map((sprint) => sprint.id)
+              : data.map((sprint) => sprint.id).slice(0, 1)
           ).then(({ data }) => {
             setResult(data)
           })
@@ -61,11 +64,12 @@ export const useGetSprints = () => {
     }))
   }, [sprints])
 
-  const dataBacklog = result
-    ?.map((stat) => stat.backlog_update)
-    .reduce(function (a, b) {
-      return a + b
-    }, 0)
+  const dataBacklog =
+    result
+      ?.map((stat) => stat.backlog_update)
+      .reduce(function (a, b) {
+        return a + b
+      }, 0) || 0
 
   const dataBlockedSum =
     result
@@ -89,56 +93,72 @@ export const useGetSprints = () => {
     ((dataBlockedSum / dataEstimationsSum) * 100).toFixed(2)
   )
 
+  const to_do_estimation_points = result?.map((stat) =>
+    stat.to_do_estimation_points
+      .slice(minRange - 1, maxRange + 1)
+      .reduce(function (a, b) {
+        return a + b
+      }, 0)
+  ) as number[]
+
+  const processed_estimation_points = result?.map((stat) =>
+    stat.processed_estimation_points
+      .slice(minRange - 1, maxRange + 1)
+      .reduce(function (a, b) {
+        return a + b
+      }, 0)
+  ) as number[]
+
+  const done_estimation_points = result?.map((stat) =>
+    stat.done_estimation_points
+      .slice(minRange - 1, maxRange + 1)
+      .reduce(function (a, b) {
+        return a + b
+      }, 0)
+  ) as number[]
+
+  const removed_estimation_points = result?.map((stat) =>
+    stat.removed_estimation_points
+      .slice(minRange - 1, maxRange + 1)
+      .reduce(function (a, b) {
+        return a + b
+      }, 0)
+  ) as number[]
+
   const dataHistogarm = {
     labels: result?.map((stat) => stat.name) as Array<string>,
     datasets: [
       {
         label: 'К выполнению',
-        data: result?.map((stat) =>
-          stat.to_do_estimation_points
-            .slice(minRange - 1, maxRange + 1)
-            .reduce(function (a, b) {
-              return a + b
-            }, 0)
-        ) as number[],
+        data: to_do_estimation_points,
         backgroundColor: '#8AF179',
         borderRadius: 100,
+        barThickness: 'flex',
+        maxBarThickness: 40,
       },
       {
         label: 'В работе',
-        data: result?.map((stat) =>
-          stat.processed_estimation_points
-            .slice(minRange - 1, maxRange + 1)
-            .reduce(function (a, b) {
-              return a + b
-            }, 0)
-        ) as number[],
+        data: processed_estimation_points,
         backgroundColor: '#7984F1',
         borderRadius: 100,
+        barThickness: 'flex',
+        maxBarThickness: 40,
       },
       {
         label: 'Сделано',
-        data: result?.map((stat) =>
-          stat.done_estimation_points
-            .slice(minRange - 1, maxRange + 1)
-            .reduce(function (a, b) {
-              return a + b
-            }, 0)
-        ) as number[],
+        data: done_estimation_points,
         backgroundColor: '#F179C1',
         borderRadius: 100,
+        barThickness: 'flex',
+        maxBarThickness: 40,
       },
       {
         label: 'Снято',
-        data: result?.map((stat) =>
-          stat.removed_estimation_points
-            .slice(minRange - 1, maxRange + 1)
-            .reduce(function (a, b) {
-              return a + b
-            }, 0)
-        ) as number[],
+        data: removed_estimation_points,
         backgroundColor: '#61C6FF',
         borderRadius: 100,
+        barThickness: 'flex',
+        maxBarThickness: 40,
       },
     ],
   }
@@ -152,6 +172,10 @@ export const useGetSprints = () => {
     dataHistogarm,
     dataBacklog,
     dataBlockedSum,
+    to_do_estimation_points,
+    processed_estimation_points,
+    done_estimation_points,
+    removed_estimation_points,
     dataBlockedPersent,
     dataTable,
     dataTooltip,

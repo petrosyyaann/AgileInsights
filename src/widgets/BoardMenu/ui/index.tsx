@@ -1,7 +1,7 @@
 import { useToast } from '@chakra-ui/react'
 import { logout } from 'entities/user/api'
 import { useMatch, useNavigate } from 'react-router-dom'
-import { Edit, Logout, Profile, Tasks } from 'shared/iconpack'
+import { Edit, Logout, Profile, Tasks, Compare } from 'shared/iconpack'
 import { Box, ButtonsNavigations, Flex } from 'shared/ui'
 
 function BoardMenu() {
@@ -10,6 +10,7 @@ function BoardMenu() {
   const isHome = useMatch('/home')
   const isUpload = useMatch('/upload')
   const isSettings = useMatch('/settings')
+  const isCompare = useMatch('/compare')
   const toast = useToast()
   if (isLogin) return null
   return (
@@ -36,6 +37,14 @@ function BoardMenu() {
             Icon={Edit}
             check={!!isUpload}
             onClick={() => navigate('/upload')}
+          />
+        </Box>
+        <Box>
+          <ButtonsNavigations
+            title="Сравнение"
+            Icon={Compare}
+            check={!!isCompare}
+            onClick={() => navigate('/compare')}
           />
         </Box>
       </Flex>

@@ -20,6 +20,7 @@ import {
   Stack,
   MenuItem,
   Text,
+  Radio,
 } from '@chakra-ui/react'
 import { Chevron } from 'shared/iconpack'
 import { useFiltresStore } from 'entities/filters/modal'
@@ -30,6 +31,7 @@ type Option = {
 }
 
 type MultiSelectProps = {
+  typeRadio?: boolean
   options?: Option[]
   onChange?: (selected: string[] | [number, number]) => void
   placeholder: string
@@ -37,20 +39,27 @@ type MultiSelectProps = {
 }
 
 export const MultiSelect = ({
+  typeRadio,
   options = [],
   onChange,
   placeholder,
   type,
 }: MultiSelectProps) => {
-  const {
-    minRange,
-    maxRange,
-    setMinRange,
-    setMaxRange,
-    selectedSprints,
-    toggleSprintSelection,
-  } = useFiltresStore()
+  const { minRange, maxRange, setMinRange, setMaxRange, selectedSprints } =
+    useFiltresStore()
   const [search, setSearch] = useState('')
+
+  function handleToggleSprint(value: string) {
+    if (typeRadio) {
+      useFiltresStore.setState({ selectedSprints: [Number(value)] })
+    } else {
+      useFiltresStore.setState((state) => ({
+        selectedSprints: state.selectedSprints.includes(Number(value))
+          ? state.selectedSprints.filter((s) => s !== Number(value))
+          : [...state.selectedSprints, Number(value)],
+      }))
+    }
+  }
 
   const handleRangeChange = (type: 'min' | 'max', value: number) => {
     if (type === 'min') {
@@ -112,14 +121,27 @@ export const MultiSelect = ({
                 {filteredOptions.map((option) => (
                   <MenuItem
                     key={option.value}
-                    onClick={() => toggleSprintSelection(option.value)}
+                    onClick={() => handleToggleSprint(option.value)}
                   >
-                    <Checkbox
-                      isChecked={selectedSprints.includes(Number(option.value))}
-                      onChange={() => toggleSprintSelection(option.value)}
-                    >
-                      {option.label}
-                    </Checkbox>
+                    {typeRadio ? (
+                      <Radio
+                        isChecked={selectedSprints.includes(
+                          Number(option.value)
+                        )}
+                        onChange={() => handleToggleSprint(option.value)}
+                      >
+                        {option.label}
+                      </Radio>
+                    ) : (
+                      <Checkbox
+                        isChecked={selectedSprints.includes(
+                          Number(option.value)
+                        )}
+                        onChange={() => handleToggleSprint(option.value)}
+                      >
+                        {option.label}
+                      </Checkbox>
+                    )}
                   </MenuItem>
                 ))}
                 {filteredOptions.length === 0 && (

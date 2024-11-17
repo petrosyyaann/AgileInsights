@@ -10,6 +10,7 @@ const SettingsPage = lazy(() => import('./settings'))
 const UploadPage = lazy(() => import('./upload'))
 const LoginPage = lazy(() => import('./login'))
 const RegistrationPage = lazy(() => import('./registration'))
+const ComparePage = lazy(() => import('./compare'))
 
 export default function Routing() {
   const isRegistration = useMatch('/registration')
@@ -41,6 +42,14 @@ export default function Routing() {
             element={
               <ProtectedRoute>
                 <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={'/compare'}
+            element={
+              <ProtectedRoute>
+                <ComparePage />
               </ProtectedRoute>
             }
           />
