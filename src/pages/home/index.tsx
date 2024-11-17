@@ -129,20 +129,22 @@ const HomePage = () => {
           >
             Оценка Ч/Д
           </Text>
-          {selectedSprints.length === 1 && recommendations && (
-            <Flex direction="column" mt="10px">
-              {recommendations.map((recommendation) => (
-                <ColorDotListItem
-                  label={`${recommendation.text}`}
-                  color={
-                    recommendation.type === 'предупреждение'
-                      ? '#61C6FF'
-                      : '#F179C1'
-                  }
-                />
-              ))}
-            </Flex>
-          )}
+          {selectedSprints.length === 1 &&
+            recommendations &&
+            recommendations.length > 0 && (
+              <Flex direction="column" mt="10px">
+                {recommendations.map((recommendation) => (
+                  <ColorDotListItem
+                    label={`${recommendation.text}`}
+                    color={
+                      recommendation.type === 'предупреждение'
+                        ? '#61C6FF'
+                        : '#F179C1'
+                    }
+                  />
+                ))}
+              </Flex>
+            )}
         </Flex>
         <Card
           percent={dataBacklog * 100 || 0}
