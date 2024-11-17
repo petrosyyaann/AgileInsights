@@ -145,7 +145,7 @@ const HomePage = () => {
           )}
         </Flex>
         <Card
-          percent={dataBacklog || 0}
+          percent={dataBacklog * 100 || 0}
           title={
             selectedSprints.length === 1
               ? 'Средний процент измнения беклога:'
