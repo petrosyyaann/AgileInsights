@@ -4,6 +4,41 @@ import { Sprint, SprintData } from 'entities/sprint/types/Sprint'
 import { useState, useMemo, useEffect } from 'react'
 import { DataRow } from 'widgets/SprintTableCard'
 
+function formatSprintData(data: SprintData[]): SprintData[] {
+  return data.map((sprint) => ({
+    ...sprint,
+    all_tasks_estimation: parseFloat(sprint.all_tasks_estimation.toFixed(2)),
+    backlog_update: parseFloat(sprint.backlog_update.toFixed(2)),
+    to_do_estimation_points: sprint.to_do_estimation_points.map((p) =>
+      parseFloat(p.toFixed(2))
+    ),
+    done_estimation_points: sprint.done_estimation_points.map((p) =>
+      parseFloat(p.toFixed(2))
+    ),
+    processed_estimation_points: sprint.processed_estimation_points.map((p) =>
+      parseFloat(p.toFixed(2))
+    ),
+    removed_estimation_points: sprint.removed_estimation_points.map((p) =>
+      parseFloat(p.toFixed(2))
+    ),
+    blocked_tasks_points: sprint.blocked_tasks_points.map((p) =>
+      parseFloat(p.toFixed(2))
+    ),
+    created_tasks_points: sprint.created_tasks_points.map((p) =>
+      parseFloat(p.toFixed(2))
+    ),
+    excluded_tasks_points: sprint.excluded_tasks_points.map((p) =>
+      parseFloat(p.toFixed(2))
+    ),
+    created_tasks_amount: sprint.created_tasks_amount.map((a) =>
+      parseFloat(a.toFixed(2))
+    ),
+    excluded_tasks_amount: sprint.excluded_tasks_amount.map((a) =>
+      parseFloat(a.toFixed(2))
+    ),
+  }))
+}
+
 function transformDataToDataRow(sprints: SprintData[]): DataRow[] {
   return sprints.map((sprint) => {
     const row: DataRow = { Спринты: sprint.name }
@@ -48,7 +83,7 @@ export const useGetSprints = () => {
               ? selectedSprints
               : data.map((sprint) => sprint.id).slice(0, 1)
           ).then(({ data }) => {
-            setResult(data)
+            setResult(formatSprintData(data))
           })
       })
       .catch(() => {})
@@ -92,8 +127,9 @@ export const useGetSprints = () => {
       }, 0) || 1
 
   const dataBlockedPersent = Number(
-    ((dataBlockedSum / dataEstimationsSum) * 100).toFixed(2)
+    ((dataBlockedSum / dataEstimationsSum) * 100).toFixed(5)
   )
+  console.log(dataBlockedSum, dataEstimationsSum)
 
   const to_do_estimation_points = result?.map((stat) =>
     stat.to_do_estimation_points

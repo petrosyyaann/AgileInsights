@@ -87,7 +87,7 @@ const ComparePage = () => {
                 {rows.map((row, index) => (
                   <Tr key={index}>
                     <Td>{row.name}</Td>
-                    <Td>{row.points && row.points.toFixed(2)}%</Td>
+                    <Td>{row.points && row.points.toFixed(2)}</Td>
                     <Td>{`Больше, чем у ${row.top && row.top.toFixed(2)}% спринтов`}</Td>
                   </Tr>
                 ))}
