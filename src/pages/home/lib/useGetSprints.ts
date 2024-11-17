@@ -17,6 +17,19 @@ function transformDataToDataRow(sprints: SprintData[]): DataRow[] {
   })
 }
 
+function transformDataToTooltip(sprints: SprintData[]): DataRow[] {
+  return sprints.map((sprint) => {
+    const row: DataRow = { Спринты: sprint.name }
+
+    sprint.created_tasks_amount.forEach((value, index) => {
+      const excludedValue = sprint.excluded_tasks_amount[index] ?? 0
+      row[String(index + 1)] = `${value}/${excludedValue}`
+    })
+
+    return row
+  })
+}
+
 export const useGetSprints = () => {
   const [sprints, setSprints] = useState<Sprint[]>()
   const [result, setResult] = useState<SprintData[]>()
@@ -67,12 +80,14 @@ export const useGetSprints = () => {
 
   const dataEstimationsSum =
     result
-      ?.map((stat) => stat.all_estimation_point)
+      ?.map((stat) => stat.all_tasks_estimation)
       .reduce(function (a, b) {
         return a + b
       }, 0) || 1
 
-  const dataBlockedPersent = (dataBlockedSum / dataEstimationsSum) * 100
+  const dataBlockedPersent = Number(
+    ((dataBlockedSum / dataEstimationsSum) * 100).toFixed(2)
+  )
 
   const dataHistogarm = {
     labels: result?.map((stat) => stat.name) as Array<string>,
@@ -128,6 +143,9 @@ export const useGetSprints = () => {
     ],
   }
   const dataTable = result ? transformDataToDataRow(result) : ([] as DataRow[])
+  const dataTooltip = result
+    ? transformDataToTooltip(result)
+    : ([] as DataRow[])
 
   return {
     data,
@@ -136,5 +154,6 @@ export const useGetSprints = () => {
     dataBlockedSum,
     dataBlockedPersent,
     dataTable,
+    dataTooltip,
   }
 }

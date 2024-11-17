@@ -8,7 +8,7 @@ export interface Sprint {
 }
 
 export interface SprintData {
-  all_estimation_point: number
+  all_tasks_estimation: number
   name: string
   sprint_id: number
   from_date: string

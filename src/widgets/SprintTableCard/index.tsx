@@ -5,7 +5,7 @@ export interface DataRow {
   [key: string]: string
 }
 
-export const SprintTableCard = ({ dataTable }: { dataTable: DataRow[] }) => {
+export const SprintTableCard = ({ dataTable, dataTooltip }: { dataTable: DataRow[], dataTooltip: DataRow[] }) => {
   const generateColumns = (): ColumnDef<DataRow>[] => {
     const columns: ColumnDef<DataRow>[] = [
       {
@@ -40,7 +40,7 @@ export const SprintTableCard = ({ dataTable }: { dataTable: DataRow[] }) => {
       <Text fontSize="18px" color="#373645" fontWeight={700} py="10px">
         «Добавлено» / «Исключено» в каждый день спринта, в Ч/Д
       </Text>
-      <SprintTable data={dataTable} columns={dynamicColumns} />
+      <SprintTable dataTooltip={dataTooltip} data={dataTable} columns={dynamicColumns} />
     </Flex>
   )
 }

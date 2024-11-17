@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react'
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Tooltip } from '@chakra-ui/react'
 import {
   useReactTable,
   ColumnDef,
@@ -14,9 +14,14 @@ interface DataRow {
 interface TableProps {
   data: DataRow[]
   columns: ColumnDef<DataRow>[]
+  dataTooltip: DataRow[]
 }
 
-export const SprintTable: React.FC<TableProps> = ({ data, columns }) => {
+export const SprintTable: React.FC<TableProps> = ({
+  data,
+  columns,
+  dataTooltip,
+}) => {
   const table = useReactTable({
     data,
     columns,
@@ -49,11 +54,24 @@ export const SprintTable: React.FC<TableProps> = ({ data, columns }) => {
           ))}
         </Thead>
         <Tbody>
-          {table.getRowModel().rows.map((row) => (
+          {table.getRowModel().rows.map((row, rowIndex) => (
             <Tr p={2} key={row.id}>
               {row.getVisibleCells().map((cell) => (
                 <Td p={2} key={cell.id} textAlign="center">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  <Tooltip
+                    label={
+                      dataTooltip[rowIndex]?.[cell.column.id] || 'Нет данных'
+                    }
+                    placement="top"
+                    hasArrow
+                  >
+                    <Box>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </Box>
+                  </Tooltip>
                 </Td>
               ))}
             </Tr>
