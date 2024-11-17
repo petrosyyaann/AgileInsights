@@ -98,7 +98,7 @@ const HomePage = () => {
           padding="10px 20px 10px 20px"
         >
           <Text fontSize="18px" color="#373645" fontWeight={700}>
-            Здоровье
+            Сумма оценок на каждом этапе спринта
           </Text>
           <Flex h={selectedSprints.length === 1 ? '30vh' : '35vh'} gap="10px">
             <Flex w="100%">

@@ -81,7 +81,6 @@ const ComparePage = () => {
                 ))}
               </Tbody>
             </Table>
-
             <Box
               p={4}
               bg="purple.50"
