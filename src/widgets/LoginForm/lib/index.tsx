@@ -1,4 +1,5 @@
 import { useToast } from '@chakra-ui/react'
+import { useFiltresStore } from 'entities/filters/modal'
 import { getUserInfo, login } from 'entities/user/api'
 import { useFormik, FormikProps } from 'formik'
 import { useNavigate } from 'react-router-dom'
@@ -41,12 +42,13 @@ export const useLoginForm = (): FormikProps<FormValues> => {
       submitLogin(values)
     },
   })
-
+  const { clearSprints } = useFiltresStore()
   const submitLogin = (values: FormValues) => {
     login(values.login, values.password)
       .then(({ data }) => {
         localStorage.setItem('refresh', data.refresh)
         if (data) {
+          clearSprints()
           getUserInfo().then(() => {
             navigate('/home')
           })

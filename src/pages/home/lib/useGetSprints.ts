@@ -64,12 +64,14 @@ export const useGetSprints = () => {
     }))
   }, [sprints])
 
-  const dataBacklog =
-    result
-      ?.map((stat) => stat.backlog_update)
-      .reduce(function (a, b) {
-        return a + b
-      }, 0) || 0
+  const dataPrevBacklog =
+    (result &&
+      result
+        ?.map((stat) => (stat.backlog_update > 1 ? 1 : stat.backlog_update))
+        .reduce((a, b) => a + b, 0) / (result?.length || 1)) ||
+    0
+
+  const dataBacklog = dataPrevBacklog > 1 ? 1 : dataPrevBacklog
 
   const dataBlockedSum =
     result
@@ -163,7 +165,7 @@ export const useGetSprints = () => {
     ],
   }
 
-  const recommendations = result && result[0].recommendations
+  const recommendations = result && result[0] && result[0].recommendations
 
   const dataTable = result ? transformDataToDataRow(result) : ([] as DataRow[])
   const dataTooltip = result

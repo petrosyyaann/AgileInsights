@@ -1,11 +1,21 @@
 import React, { useRef, useState } from 'react'
-import { Flex, Icon, IconButton, Input, Text, useToast } from '@chakra-ui/react'
+import {
+  Flex,
+  Icon,
+  IconButton,
+  Input,
+  Text,
+  useToast,
+  Spinner,
+} from '@chakra-ui/react'
 import { Close, Upload } from 'shared/iconpack'
 import { Button, ContainerApp } from 'shared/ui'
 import { postFiles } from 'entities/sprint/api'
+import { useFiltresStore } from 'entities/filters/modal'
 
 const UploadPage = () => {
   const [files, setFiles] = useState<File[]>([])
+  const [isLoading, setIsLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const toast = useToast()
 
@@ -34,17 +44,27 @@ const UploadPage = () => {
     setFiles((prev) => prev.filter((_, i) => i !== index))
   }
 
+  const { clearSprints } = useFiltresStore()
+
   const handleSubmit = async () => {
+    setIsLoading(true)
     try {
-      await postFiles(files)
-      toast({
-        title: 'Файлы успешно загружены!',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
-      setFiles([]) 
+      const response = await postFiles(files)
+      if (response.status === 201) {
+        clearSprints()
+        setTimeout(() => {
+          toast({
+            title: 'Файлы успешно загружены!',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          })
+          setFiles([])
+          setIsLoading(false)
+        }, 2000)
+      }
     } catch (error) {
+      setIsLoading(false)
       toast({
         title: 'Ошибка при загрузке!',
         description: 'Не удалось загрузить файлы. Попробуйте снова.',
@@ -136,8 +156,9 @@ const UploadPage = () => {
                 background="blue.500"
                 color="white"
                 onClick={handleSubmit}
+                isDisabled={isLoading}
               >
-                Импортировать
+                {isLoading ? <Spinner size="sm" /> : 'Импортировать'}
               </Button>
             )}
           </Flex>
