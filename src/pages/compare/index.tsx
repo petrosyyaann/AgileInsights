@@ -89,9 +89,9 @@ const ComparePage = () => {
               borderRadius="md"
             >
               <Text fontWeight="bold" fontSize="lg">
-                Итог: Этот спринт лучше, чем{' '}
+                Итог: параметры этого спринта лучше, чем параметры других
+                спринтов на{' '}
                 {dataCompare.result && (dataCompare.result * 100).toFixed(2)}%
-                спринтов
               </Text>
             </Box>
           </Flex>
