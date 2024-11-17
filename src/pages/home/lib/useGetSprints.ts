@@ -4,7 +4,7 @@ import { Sprint, SprintData } from 'entities/sprint/types/Sprint'
 import { useState, useMemo, useEffect } from 'react'
 import { DataRow } from 'widgets/SprintTableCard'
 
-function transformDataToDataRow(sprints: SprintData[]): DataRow[] {
+function transformDataToDataRow(sprints: Result): DataRow[] {
   return sprints.map((sprint) => {
     const row: DataRow = { Спринты: sprint.name }
 
@@ -17,7 +17,7 @@ function transformDataToDataRow(sprints: SprintData[]): DataRow[] {
   })
 }
 
-function transformDataToTooltip(sprints: SprintData[]): DataRow[] {
+function transformDataToTooltip(sprints: Result): DataRow[] {
   return sprints.map((sprint) => {
     const row: DataRow = { Спринты: sprint.name }
 
@@ -30,9 +30,16 @@ function transformDataToTooltip(sprints: SprintData[]): DataRow[] {
   })
 }
 
+interface Result extends Array<SprintData> {
+  recommendations: Array<{
+    type: string
+    text: string
+  }>
+}
+
 export const useGetSprints = () => {
   const [sprints, setSprints] = useState<Sprint[]>()
-  const [result, setResult] = useState<SprintData[]>()
+  const [result, setResult] = useState<Result>()
   const { selectedSprints, maxRange, minRange, toggleSprintSelection } =
     useFiltresStore()
 
@@ -162,12 +169,16 @@ export const useGetSprints = () => {
       },
     ],
   }
+
+  const recommendations = result && result.recommendations
+
   const dataTable = result ? transformDataToDataRow(result) : ([] as DataRow[])
   const dataTooltip = result
     ? transformDataToTooltip(result)
     : ([] as DataRow[])
 
   return {
+    recommendations,
     data,
     dataHistogarm,
     dataBacklog,

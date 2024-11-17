@@ -26,6 +26,7 @@ const HomePage = () => {
     processed_estimation_points,
     done_estimation_points,
     removed_estimation_points,
+    recommendations,
   } = useGetSprints()
   const { selectedSprints } = useFiltresStore()
 
@@ -128,20 +129,14 @@ const HomePage = () => {
           >
             Оценка Ч/Д
           </Text>
-          {selectedSprints.length === 1 && (
+          {selectedSprints.length === 1 && recommendations && (
             <Flex direction="column" mt="10px">
-              <ColorDotListItem
-                label={
-                  'Снято - не должно составлять более 10% от общего объема'
-                }
-                color={'#61C6FF'}
-              />
-              <ColorDotListItem
-                label={
-                  'К выполнению - не должно составлять более 20% от общего объема'
-                }
-                color={'#8AF179'}
-              />
+              {recommendations.map((recommendation) => (
+                <ColorDotListItem
+                  label={`${recommendation.type} - ${recommendation.text}`}
+                  color={'#61C6FF'}
+                />
+              ))}
             </Flex>
           )}
         </Flex>
