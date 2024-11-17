@@ -133,8 +133,12 @@ const HomePage = () => {
             <Flex direction="column" mt="10px">
               {recommendations.map((recommendation) => (
                 <ColorDotListItem
-                  label={`${recommendation.type} - ${recommendation.text}`}
-                  color={'#61C6FF'}
+                  label={`${recommendation.text}`}
+                  color={
+                    recommendation.type === 'предупреждение'
+                      ? '#61C6FF'
+                      : '#F179C1'
+                  }
                 />
               ))}
             </Flex>
