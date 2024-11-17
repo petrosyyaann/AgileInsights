@@ -24,9 +24,6 @@ export interface SprintData {
   created_tasks_amount: number[]
   excluded_tasks_amount: number[]
   tasks_in_sprint: number
-}
-
-export interface Result extends Array<SprintData>{
   recommendations: Array<{
     type: string
     text: string

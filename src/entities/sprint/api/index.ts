@@ -1,5 +1,5 @@
 import axios from 'shared/api/axios'
-import { Compare, Result, Sprint } from '../types/Sprint'
+import { Compare, Sprint, SprintData } from '../types/Sprint'
 
 export function getSprint() {
   return axios.get<Sprint[]>(`/api/v1/sprint/all`, {
@@ -14,7 +14,7 @@ export function getCompare(id: number) {
 }
 
 export function getResultSprints(ids: Array<number>) {
-  return axios.post<Result>(`/api/v1/sprint/result`, ids, {
+  return axios.post<SprintData[]>(`/api/v1/sprint/result`, ids, {
     withCredentials: true,
   })
 }
