@@ -16,6 +16,18 @@ import { useGetCompare } from './lib/useGetCompare'
 const ComparePage = () => {
   const { data } = useGetSprints()
   const { dataCompare } = useGetCompare()
+
+  if (!data || (data && data?.length === 0))
+    return (
+      <ContainerApp>
+        <Flex w="100%" alignItems="center" justifyContent="center">
+          <Text fontSize="38px" color="#373645" fontWeight={700}>
+            Загрузите спринты
+          </Text>
+        </Flex>
+      </ContainerApp>
+    )
+
   const rows = dataCompare && [
     {
       name: 'Оценка к работе',

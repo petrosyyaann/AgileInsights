@@ -1,4 +1,11 @@
-import { Box, ColorDotListItem, Flex, MultiSelect, Text } from 'shared/ui'
+import {
+  Box,
+  ColorDotListItem,
+  ContainerApp,
+  Flex,
+  MultiSelect,
+  Text,
+} from 'shared/ui'
 import { Card } from 'shared/ui/card'
 import StackedBarChart from 'shared/ui/histogram'
 import { SprintTableCard } from 'widgets/SprintTableCard'
@@ -29,6 +36,17 @@ const HomePage = () => {
     recommendations,
   } = useGetSprints()
   const { selectedSprints } = useFiltresStore()
+
+  if (!data || (data && data?.length === 0))
+    return (
+      <ContainerApp>
+        <Flex w="100%" alignItems="center" justifyContent='center'>
+          <Text fontSize="38px" color="#373645" fontWeight={700}>
+            Загрузите спринты
+          </Text>
+        </Flex>
+      </ContainerApp>
+    )
 
   return (
     <Flex
@@ -63,14 +81,6 @@ const HomePage = () => {
             gap="20px"
           >
             <MultiSelect options={data} placeholder="Спринты" type={'multi'} />
-            {/* <MultiSelect
-            options={[
-              { label: 'Asisiti', value: 'Asisiti' },
-              { label: 'SpchX', value: 'SpchX' },
-            ]}
-            placeholder="Команда спринта"
-            type={'multi'}
-          /> */}
             <MultiSelect placeholder="Дни спринта для анализа" type={'range'} />
           </Flex>
         </Flex>

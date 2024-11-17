@@ -42,7 +42,7 @@ export const useGetSprints = () => {
         setSprints(data)
         !(selectedSprints.length > 0) &&
           toggleSprintSelection(String(data.map((sprint) => sprint.id)[0]))
-        data &&
+        data.length > 0 &&
           getResultSprints(
             selectedSprints.length > 0
               ? selectedSprints
@@ -169,8 +169,6 @@ export const useGetSprints = () => {
   const dataTooltip = result
     ? transformDataToTooltip(result)
     : ([] as DataRow[])
-  console.log(result)
-  console.log(recommendations)
 
   return {
     recommendations,
