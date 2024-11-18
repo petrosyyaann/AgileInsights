@@ -19,7 +19,22 @@ export interface SettingsState {
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
-      settings: [],
+      settings: [
+        {
+          id: '1731888047523',
+          name: 'Дефолтное значение 1',
+          field_name: 'Средний процент изменения беклога',
+          sign: '<',
+          threshold: 50,
+        },
+        {
+          id: '1731888065425',
+          name: 'Дефолтное значение 2',
+          field_name: 'Средний процент изменения беклога',
+          sign: '<',
+          threshold: 20,
+        },
+      ],
       addSetting: (setting) =>
         set((state) => ({ settings: [...state.settings, setting] })),
       removeSetting: (id) =>
@@ -27,6 +42,6 @@ export const useSettingsStore = create<SettingsState>()(
           settings: state.settings.filter((setting) => setting.id !== id),
         })),
     }),
-    { name: 'sprint-health-settings' } // ключ для localStorage
+    { name: 'sprint-health-settings' } 
   )
 )

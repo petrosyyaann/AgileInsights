@@ -40,7 +40,7 @@ const HomePage = () => {
   if (!data || (data && data?.length === 0))
     return (
       <ContainerApp>
-        <Flex w="100%" alignItems="center" justifyContent='center'>
+        <Flex w="100%" alignItems="center" justifyContent="center">
           <Text fontSize="38px" color="#373645" fontWeight={700}>
             Загрузите спринты
           </Text>

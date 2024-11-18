@@ -35,55 +35,32 @@ export const SprintHealthWidget = ({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { settings } = useSettingsStore()
 
-  // Сумма всех значений для расчета процентов
   const total =
     to_do_estimation_point +
     processed_estimation_point +
     done_estimation_point +
     removed_estimation_point
 
-  const toDoPercent = (to_do_estimation_point / total) * 100 || 0
-  const processedPercent = (processed_estimation_point / total) * 100 || 0
-  const donePercent = (done_estimation_point / total) * 100 || 0
-  const removedPercent = (removed_estimation_point / total) * 100 || 0
+  const calculatePercentage = (value: number) => (value / total) * 100 || 0
+
+  const fieldValues: Record<string, number> = {
+    'Оценка к работе': to_do_estimation_point,
+    'Оценка в работе': processed_estimation_point,
+    'Оценка сделано': done_estimation_point,
+    'Оценка снято': removed_estimation_point,
+    'Процент к работе от всего': calculatePercentage(to_do_estimation_point),
+    'Процент в работе от всего': calculatePercentage(
+      processed_estimation_point
+    ),
+    'Процент сделано от всего': calculatePercentage(done_estimation_point),
+    'Процент снято от всего': calculatePercentage(removed_estimation_point),
+    'Средний процент изменения беклога': dataBacklog,
+    'Процент заблокированных задач': dataBlockedPersent,
+  }
 
   const failedConditions = settings.filter(
     ({ field_name, sign, threshold }) => {
-      let value = 0
-
-      switch (field_name) {
-        case 'Оценка к работе':
-          value = to_do_estimation_point
-          break
-        case 'Оценка в работе':
-          value = processed_estimation_point
-          break
-        case 'Оценка сделано':
-          value = done_estimation_point
-          break
-        case 'Оценка снято':
-          value = removed_estimation_point
-          break
-        case 'Процент к работе от всего':
-          value = toDoPercent
-          break
-        case 'Процент в работе от всего':
-          value = processedPercent
-          break
-        case 'Процент сделано от всего':
-          value = donePercent
-          break
-        case 'Процент снято от всего':
-          value = removedPercent
-          break
-        case 'Средний процент изменения беклога':
-          value = dataBlockedPersent
-          break
-        case 'Процент заблокированных задач':
-          value = dataBacklog
-          break
-      }
-
+      const value = fieldValues[field_name] || 0
       return sign === '>' ? value <= threshold : value >= threshold
     }
   )
@@ -91,15 +68,15 @@ export const SprintHealthWidget = ({
   const failedConditionsCount = failedConditions.length
   const healthColor =
     failedConditionsCount === 0
-      ? '#7CE86A' // Зеленый
-      : failedConditionsCount <= 3
-        ? '#FFE15A' // Желтый
-        : '#FF6A6A' // Красный
+      ? '#7CE86A'
+      : failedConditionsCount < 2
+        ? '#FFE15A'
+        : '#FF6A6A'
 
   const healthStatus =
     failedConditionsCount === 0
       ? 'Здоров'
-      : failedConditionsCount <= 3
+      : failedConditionsCount < 2
         ? 'Предупреждение'
         : 'Нездоров'
 
@@ -154,70 +131,36 @@ export const SprintHealthWidget = ({
                   Нарушенные условия:
                 </Text>
                 <Divider />
-                {failedConditions.map((condition, index) => {
-                  let value = 0
-
-                  switch (condition.field_name) {
-                    case 'Оценка к работе':
-                      value = to_do_estimation_point
-                      break
-                    case 'Оценка в работе':
-                      value = processed_estimation_point
-                      break
-                    case 'Оценка сделано':
-                      value = done_estimation_point
-                      break
-                    case 'Оценка снято':
-                      value = removed_estimation_point
-                      break
-                    case 'Процент к работе от всего':
-                      value = toDoPercent
-                      break
-                    case 'Процент в работе от всего':
-                      value = processedPercent
-                      break
-                    case 'Процент сделано от всего':
-                      value = donePercent
-                      break
-                    case 'Процент снято от всего':
-                      value = removedPercent
-                      break
-                    case 'Средний процент изменения беклога':
-                      value = dataBlockedPersent
-                      break
-                    case 'Процент заблокированных задач':
-                      value = dataBacklog
-                      break
-                  }
-
-                  return (
-                    <Flex key={index} w="100%" justifyContent="space-between">
-                      <Box>
-                        <Text>
-                          <strong>{condition.field_name}</strong>: {value}{' '}
-                        </Text>
-                      </Box>
-                      <Box>
-                        <Text>
-                          <Tag
-                            size="sm"
-                            colorScheme={
-                              condition.sign === '>'
-                                ? value <= condition.threshold
-                                  ? 'red'
-                                  : 'green'
-                                : value >= condition.threshold
-                                  ? 'red'
-                                  : 'green'
-                            }
-                          >
-                            Должно быть {condition.sign} {condition.threshold}
-                          </Tag>
-                        </Text>
-                      </Box>
-                    </Flex>
-                  )
-                })}
+                {failedConditions.map((condition, index) => (
+                  <Flex key={index} w="100%" justifyContent="space-between">
+                    <Box>
+                      <Text>
+                        <strong>{condition.field_name}</strong>:{' '}
+                        {fieldValues[condition.field_name]}{' '}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text>
+                        <Tag
+                          size="sm"
+                          colorScheme={
+                            condition.sign === '>'
+                              ? fieldValues[condition.field_name] <=
+                                condition.threshold
+                                ? 'red'
+                                : 'green'
+                              : fieldValues[condition.field_name] >=
+                                  condition.threshold
+                                ? 'red'
+                                : 'green'
+                          }
+                        >
+                          Должно быть {condition.sign} {condition.threshold}
+                        </Tag>
+                      </Text>
+                    </Box>
+                  </Flex>
+                ))}
               </Stack>
             )}
           </ModalBody>

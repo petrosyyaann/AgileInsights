@@ -129,7 +129,6 @@ export const useGetSprints = () => {
   const dataBlockedPersent = Number(
     ((dataBlockedSum / dataEstimationsSum) * 100).toFixed(5)
   )
-  console.log(dataBlockedSum, dataEstimationsSum)
 
   const to_do_estimation_points = result?.map((stat) =>
     stat.to_do_estimation_points
