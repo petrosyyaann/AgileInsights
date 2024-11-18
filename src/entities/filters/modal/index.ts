@@ -14,7 +14,7 @@ type FilterState = {
 export const useFiltresStore = create<FilterState>()(
   persist(
     (set) => ({
-      minRange: 0,
+      minRange: 1,
       maxRange: 14,
       setMinRange: (value: number) =>
         set((state) => ({

@@ -54,7 +54,7 @@ export const SprintHealthWidget = ({
     ),
     'Процент сделано от всего': calculatePercentage(done_estimation_point),
     'Процент снято от всего': calculatePercentage(removed_estimation_point),
-    'Средний процент изменения беклога': dataBacklog,
+    'Средний процент изменения беклога': dataBacklog * 100,
     'Процент заблокированных задач': dataBlockedPersent,
   }
 
